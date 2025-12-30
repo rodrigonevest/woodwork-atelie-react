@@ -1,20 +1,23 @@
-import logo from '../assets/images/icon/logo.ico'
+import { Link } from 'react-router-dom'
+import logo from '../assets/img/icon/logo.ico'
 
 function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark footer-madeira">
       <div className="container">
-        <img src={logo} alt="Logo" width="100" className="me-3" />
-
-        <a className="navbar-brand fw-bold" href="#">
-          WoodWork Design - Ateliê da Madeira
-        </a>
+        <Link className="navbar-brand fw-bold d-flex align-items-center" to="/">
+          <img src={logo} alt="Logo WoodWork" width="50" className="me-2" />
+          WoodWork Design
+        </Link>
 
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -22,16 +25,16 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <a className="navbar-brand" href="#">Início</a>
+              <Link className="nav-link" to="/">Início</Link>
             </li>
             <li className="nav-item">
-              <a className="navbar-brand" href="#">Portfólio</a>
+              <Link className="nav-link" to="/portfolio">Portfólio</Link>
             </li>
             <li className="nav-item">
-              <a className="navbar-brand" href="#">Sobre</a>
+              <Link className="nav-link" to="/sobre">Sobre</Link>
             </li>
             <li className="nav-item">
-              <a className="navbar-brand" href="#">Contato</a>
+              <Link className="nav-link" to="/contato">Contato</Link>
             </li>
           </ul>
         </div>
