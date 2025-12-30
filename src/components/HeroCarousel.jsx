@@ -1,27 +1,4 @@
-import slide1 from '../assets/img/slide-1.webp'
-import slide2 from '../assets/img/slide-2.webp'
-import slide3 from '../assets/img/slide-3.webp'
-
-const slides = [
-  {
-    id: 0,
-    image: slide1,
-    alt: 'Tábuas de corte artesanais com carne e faca',
-    text: 'Tábuas artesanais para quem valoriza o churrasco de verdade.'
-  },
-  {
-    id: 1,
-    image: slide2,
-    alt: 'Trabalho manual em madeira detalhado',
-    text: 'Cada detalhe feito à mão.'
-  },
-  {
-    id: 2,
-    image: slide3,
-    alt: 'Mesa posta com tábuas de madeira e alimentos',
-    text: 'Presente nas melhores histórias.'
-  }
-]
+import { carouselSlides } from "../data/content";
 
 function HeroCarousel() {
   return (
@@ -30,26 +7,28 @@ function HeroCarousel() {
         id="heroCarousel"
         className="carousel slide"
         data-bs-ride="carousel"
+        data-bs-interval="5000"
       >
         <div className="carousel-indicators">
-          {slides.map((slide, index) => (
+          {carouselSlides.map((slide, index) => (
             <button
               key={slide.id}
               type="button"
               data-bs-target="#heroCarousel"
               data-bs-slide-to={index}
-              className={index === 0 ? 'active' : ''}
-              aria-current={index === 0 ? 'true' : 'false'}
+              className={index === 0 ? "active" : ""}
+              aria-current={index === 0 ? "true" : "false"}
               aria-label={`Slide ${index + 1}`}
             ></button>
           ))}
         </div>
 
         <div className="carousel-inner">
-          {slides.map((slide, index) => (
+          {carouselSlides.map((slide, index) => (
             <div
               key={slide.id}
-              className={`carousel-item ${index === 0 ? 'active' : ''}`}
+              className={`carousel-item ${index === 0 ? "active" : ""}`}
+              data-bs-interval="5000"
             >
               <div className="carousel-overlay">
                 <img
@@ -72,7 +51,10 @@ function HeroCarousel() {
           data-bs-target="#heroCarousel"
           data-bs-slide="prev"
         >
-          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span
+            className="carousel-control-prev-icon"
+            aria-hidden="true"
+          ></span>
           <span className="visually-hidden">Anterior</span>
         </button>
 
@@ -82,18 +64,15 @@ function HeroCarousel() {
           data-bs-target="#heroCarousel"
           data-bs-slide="next"
         >
-          <span className="carousel-control-next-icon" aria-hidden="true"></span>
+          <span
+            className="carousel-control-next-icon"
+            aria-hidden="true"
+          ></span>
           <span className="visually-hidden">Próximo</span>
         </button>
       </div>
-
-      <div className="container text-center py-5">
-        <a href="#portfolio" className="btn btn-dark btn-lg btn-portifolio">
-          Ver Portfólio
-        </a>
-      </div>
     </section>
-  )
+  );
 }
 
-export default HeroCarousel
+export default HeroCarousel;

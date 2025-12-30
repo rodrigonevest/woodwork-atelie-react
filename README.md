@@ -1,16 +1,26 @@
-# React + Vite
+# WoodWork Design
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React](https://img.shields.io/badge/React-18-blue) ![Vite](https://img.shields.io/badge/Vite-5-purple) ![Bootstrap](https://img.shields.io/badge/Bootstrap-5-orange) ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 
-Currently, two official plugins are available:
+Aplicação institucional e portfólio desenvolvida como Single Page Application (SPA). O projeto foca em componentização, performance e manutenibilidade, utilizando React e Vite com infraestrutura containerizada via Docker.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tecnologias
 
-## React Compiler
+- **Runtime/Build:** Node.js (v18+), Vite
+- **Frontend:** React 18, React DOM 18
+- **Roteamento:** React Router DOM 6
+- **Estilização:** Bootstrap 5, CSS Modules/Variables
+- **Infraestrutura:** Docker, Docker Compose, Nginx (Alpine)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Estrutura do Projeto
 
-## Expanding the ESLint configuration
+Separa responsabilidades entre lógica de apresentação, dados estáticos e layouts.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
+src/
+├── assets/          # Recursos estáticos (imagens, estilos globais)
+├── components/      # Componentes de UI reutilizáveis
+├── data/            # Fontes de dados estáticos e configurações de conteúdo
+├── layouts/         # Componentes estruturais de página (HOCs)
+├── pages/           # Visualizações principais mapeadas nas rotas
+└── main.jsx         # Entrypoint da aplicação
