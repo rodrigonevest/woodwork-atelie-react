@@ -223,7 +223,7 @@ export default function AdminPosts() {
                   accept="image/*"
                   onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
                 />
-                <div className="form-text">
+                <div className="form-text" style={{display: "none"}}>
                   Bucket do Supabase Storage: <code>portfolio</code> (pasta <code>covers/</code>)
                 </div>
               </div>
@@ -237,7 +237,7 @@ export default function AdminPosts() {
                   id="isPublished"
                 />
                 <label className="form-check-label" htmlFor="isPublished">
-                  Publicado
+                  Publicar
                 </label>
               </div>
 
