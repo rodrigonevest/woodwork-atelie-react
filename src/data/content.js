@@ -4,13 +4,13 @@ import slide3 from "../assets/img/slide-3.webp";
 import project1 from "../assets/img/teste.webp";
 
 export const companyInfo = {
-  name: "WoodWork Design",
+  name: "Maikon Ateliê da Madeira",
   slogan: "Artesanato em madeira, cuidado em cada detalhe.",
   description:
     "Nascemos da paixão pela madeira e pela arte de criar. Cada peça que sai do nosso ateliê carrega uma história de dedicação.",
   year: new Date().getFullYear(),
   contact: {
-    whatsapp: "5599999999999",
+    whatsapp: "5518997138038",
     email: "contato@woodwork.com.br",
   },
 };
@@ -23,7 +23,7 @@ export const navigationLinks = [
 ];
 
 export const homeContent = {
-  welcomeTitle: "Bem-vindo ao WoodWork Design",
+  welcomeTitle: "Bem-vindo ao Maikon Ateliê da Madeira",
   features: [
     {
       id: 1,
