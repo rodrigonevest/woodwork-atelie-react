@@ -18,15 +18,15 @@ function formatDate(dt) {
   }
 }
 
-// Upload de capa feito via HTTP para o Supabase Storage (sem SDK)
-
 export default function AdminPosts() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const [editing, setEditing] = useState(null); // item | null
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState(null);
+
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -35,6 +35,30 @@ export default function AdminPosts() {
 
   const hasSupabase = useMemo(() => isSupabaseConfigured(), []);
 
+  function resetForm() {
+    setEditing(null);
+    setTitle("");
+    setCategory("");
+    setDescription("");
+    setIsPublished(true);
+    setCoverFile(null);
+  }
+
+  function startNew() {
+    resetForm();
+    setShowForm(true);
+  }
+
+  function startEdit(item) {
+    setEditing(item);
+    setTitle(item.title ?? "");
+    setCategory(item.category ?? "");
+    setDescription(item.description ?? "");
+    setIsPublished(!!item.is_published);
+    setCoverFile(null);
+    setShowForm(true);
+  }
+
   async function load() {
     setError("");
     if (!isSupabaseConfigured()) {
@@ -42,6 +66,7 @@ export default function AdminPosts() {
       setLoading(false);
       return;
     }
+
     const session = getSavedSession();
     const token = session?.access_token;
     if (!token) {
@@ -49,6 +74,7 @@ export default function AdminPosts() {
       setLoading(false);
       return;
     }
+
     setLoading(true);
     try {
       const data = await listAllPosts(token);
@@ -62,48 +88,28 @@ export default function AdminPosts() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function startNew() {
-    setEditing(null);
-    setTitle("");
-    setCategory("");
-    setDescription("");
-    setIsPublished(true);
-    setCoverFile(null);
-  }
-
-  function startEdit(item) {
-    setEditing(item);
-    setTitle(item.title ?? "");
-    setCategory(item.category ?? "");
-    setDescription(item.description ?? "");
-    setIsPublished(!!item.is_published);
-    setCoverFile(null);
-  }
 
   async function save(e) {
     e.preventDefault();
     setError("");
 
     if (!isSupabaseConfigured()) {
-      setError(
-        "Supabase não configurado. Defina VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env e no Vercel."
-      );
+      setError("Supabase não configurado.");
       return;
     }
 
     const session = getSavedSession();
     const token = session?.access_token;
     if (!token) {
-      setError("Você precisa estar logado. Vá para /admin.");
+      setError("Você precisa estar logado.");
       return;
     }
 
     setSaving(true);
     try {
       let cover_url = editing?.cover_url ?? null;
+
       if (coverFile) {
         const uploaded = await uploadCover(token, coverFile);
         cover_url = uploaded.publicUrl;
@@ -123,7 +129,8 @@ export default function AdminPosts() {
         await insertPost(token, payload);
       }
 
-      startNew();
+      resetForm();
+      setShowForm(false);
       await load();
     } catch (err) {
       setError(err?.message || "Erro ao salvar");
@@ -136,8 +143,7 @@ export default function AdminPosts() {
     const session = getSavedSession();
     const token = session?.access_token;
     if (!token) return;
-    // confirmação simples
-    // eslint-disable-next-line no-alert
+
     if (!window.confirm(`Excluir "${item.title}"?`)) return;
 
     setError("");
@@ -171,91 +177,99 @@ export default function AdminPosts() {
         </div>
       </div>
 
-      {!hasSupabase ? (
-        <div className="alert alert-warning">
-          Supabase não configurado. Defina <b>VITE_SUPABASE_URL</b> e <b>VITE_SUPABASE_ANON_KEY</b>.
-        </div>
-      ) : null}
-
-      {error ? <div className="alert alert-danger">{error}</div> : null}
+      {error && <div className="alert alert-danger">{error}</div>}
 
       <div className="row g-4">
+        {/* FORMULÁRIO */}
         <div className="col-12 col-lg-5">
-          <div className="card p-4">
-            <h5 className="mb-3">{editing ? "Editar post" : "Novo post"}</h5>
-
-            <form onSubmit={save}>
-              <div className="mb-3">
-                <label className="form-label">Título</label>
-                <input
-                  className="form-control"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
+          {!showForm ? (
+            <div className="card p-4 text-center text-muted">
+              <p className="mb-1">
+                Clique em <b>+ Novo</b> para criar um post
+              </p>
+              <small>ou em <b>Editar</b> em um post existente</small>
+            </div>
+          ) : (
+            <div className="card p-4">
+              <div className="d-flex align-items-center justify-content-between mb-3">
+                <h5 className="mb-0">{editing ? "Editar post" : "Novo post"}</h5>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary btn-sm"
+                  onClick={() => {
+                    resetForm();
+                    setShowForm(false);
+                  }}
+                >
+                  Fechar
+                </button>
               </div>
 
-              <div className="mb-3">
-                <label className="form-label">Categoria (opcional)</label>
-                <input
-                  className="form-control"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  placeholder="Ex.: Churrasco, Cozinha, Planejados"
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Descrição</label>
-                <textarea
-                  className="form-control"
-                  rows={4}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Imagem de capa</label>
-                <input
-                  className="form-control"
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
-                />
-                <div className="form-text" style={{display: "none"}}>
-                  Bucket do Supabase Storage: <code>portfolio</code> (pasta <code>covers/</code>)
+              <form onSubmit={save}>
+                <div className="mb-3">
+                  <label className="form-label">Título</label>
+                  <input
+                    className="form-control"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
                 </div>
-              </div>
 
-              <div className="form-check mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  checked={isPublished}
-                  onChange={(e) => setIsPublished(e.target.checked)}
-                  id="isPublished"
-                />
-                <label className="form-check-label" htmlFor="isPublished">
-                  Publicar
-                </label>
-              </div>
+                <div className="mb-3">
+                  <label className="form-label">Categoria</label>
+                  <input
+                    className="form-control"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  />
+                </div>
 
-              <button className="btn btn-dark w-100" disabled={saving}>
-                {saving ? "Salvando..." : "Salvar"}
-              </button>
-            </form>
-          </div>
+                <div className="mb-3">
+                  <label className="form-label">Descrição</label>
+                  <textarea
+                    className="form-control"
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Imagem de capa</label>
+                  <input
+                    className="form-control"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+
+                <div className="form-check mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={isPublished}
+                    onChange={(e) => setIsPublished(e.target.checked)}
+                    id="isPublished"
+                  />
+                  <label className="form-check-label" htmlFor="isPublished">
+                    Publicar
+                  </label>
+                </div>
+
+                <button className="btn btn-dark w-100" disabled={saving}>
+                  {saving ? "Salvando..." : "Salvar"}
+                </button>
+              </form>
+            </div>
+          )}
         </div>
 
+        {/* LISTA */}
         <div className="col-12 col-lg-7">
           <div className="card p-4">
-            <div className="d-flex align-items-center justify-content-between mb-3">
-              <h5 className="mb-0">Posts</h5>
-              <button className="btn btn-outline-secondary btn-sm" onClick={load} disabled={loading}>
-                Atualizar
-              </button>
-            </div>
+            <h5 className="mb-3">Posts</h5>
 
             {loading ? (
               <div className="text-muted">Carregando...</div>
@@ -291,10 +305,16 @@ export default function AdminPosts() {
                         <td className="text-muted small">{formatDate(it.created_at)}</td>
                         <td className="text-end">
                           <div className="btn-group">
-                            <button className="btn btn-outline-dark btn-sm" onClick={() => startEdit(it)}>
+                            <button
+                              className="btn btn-outline-dark btn-sm"
+                              onClick={() => startEdit(it)}
+                            >
                               Editar
                             </button>
-                            <button className="btn btn-outline-danger btn-sm" onClick={() => remove(it)}>
+                            <button
+                              className="btn btn-outline-danger btn-sm"
+                              onClick={() => remove(it)}
+                            >
                               Excluir
                             </button>
                           </div>
