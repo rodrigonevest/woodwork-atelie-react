@@ -5,6 +5,9 @@ import Portfolio from "./pages/Portfolio";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminPosts from "./pages/admin/AdminPosts";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -14,6 +17,15 @@ function App() {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/sobre" element={<About />} />
         <Route path="/contato" element={<Contact />} />
+        <Route path="/admin" element={<AdminLogin />} />
+        <Route
+          path="/admin/posts"
+          element={
+            <ProtectedRoute>
+              <AdminPosts />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
