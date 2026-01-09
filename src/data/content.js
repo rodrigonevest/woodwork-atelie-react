@@ -2,6 +2,9 @@ import slide1 from "../assets/img/slide-1.webp";
 import slide2 from "../assets/img/slide-2.webp";
 import slide3 from "../assets/img/slide-3.webp";
 import project1 from "../assets/img/teste.webp";
+import artesao from "../assets/img/artesao.webp";
+import madeira from "../assets/img/madeira_sobre.webp";
+import tabua from "../assets/img/tabua.webp";
 
 export const companyInfo = {
   name: "Maikon Ateliê da Madeira",
@@ -120,5 +123,23 @@ export const portfolioItems = [
     category: "Cozinha",
     image: project1,
     description: "Design ergonômico para servir.",
+  },
+];
+
+export const aboutItems = [
+  {
+    id: 1,
+    title: "Artesão em sua oficina",
+    image: artesao,
+  },
+  {
+    id:2,
+    title:"Detalhes do trabalho em madeira",
+    image: madeira,
+  },
+  {
+    id:3,
+    title:"Tábuas de madeira para uso diário",
+    image: tabua,
   },
 ];
